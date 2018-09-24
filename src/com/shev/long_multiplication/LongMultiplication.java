@@ -7,22 +7,73 @@ class LongMultiplication {
     private int lengthOfMaxValue;
     private int lengthOfMinValue;
     private int lengthOfResult;
-    //private long[] multiplicationResults;
+    private int biggestLength;
+    private String minValueSpace;
+    private String maxValueSpace;
+    private String resultSpace;
 
    LongMultiplication(int value_1, int value_2) {
         if(value_1>value_2){
-            this.maxValue = value_1;
-            this.minValue = value_2;
+            maxValue = value_1;
+            minValue = value_2;
         }else {
-            this.maxValue = value_2;
-            this.minValue = value_1;
+            maxValue = value_2;
+            minValue = value_1;
         }
-        this.result = maxValue*minValue;
-        this.lengthOfMaxValue = String.valueOf(this.maxValue).length();
-        this.lengthOfMinValue = String.valueOf(this.minValue).length();
-        this.lengthOfResult = String.valueOf(this.result).length();
-        //multiplicationResults = new long[this.lengthOfMinValue];
+        result = maxValue*minValue;
+        lengthOfMaxValue = String.valueOf(maxValue).length();
+        lengthOfMinValue = String.valueOf(minValue).length();
+        lengthOfResult = String.valueOf(result).length();
+        getBiggestLengthWithAllSpaces();
         getMultiplicationResults();
+    }
+
+    private void getBiggestLengthWithAllSpaces() {
+       if(lengthOfMaxValue>lengthOfMinValue&&lengthOfMaxValue>lengthOfResult|lengthOfResult==lengthOfMaxValue){
+           biggestLength=lengthOfMaxValue;
+           maxValueSpace = "";
+           minValueSpace = getSpace(lengthOfMaxValue-lengthOfMinValue);
+           resultSpace = getSpace(lengthOfMaxValue-lengthOfResult);
+       }
+       if(lengthOfMaxValue>lengthOfMinValue&&lengthOfMaxValue<lengthOfResult){
+           biggestLength=lengthOfResult;
+           maxValueSpace = getSpace(lengthOfResult-lengthOfMaxValue);
+           minValueSpace = getSpace(lengthOfResult-lengthOfMinValue);
+           resultSpace = "";
+       }
+       if(lengthOfMinValue>lengthOfMaxValue&&lengthOfMinValue>lengthOfResult|lengthOfResult==lengthOfMinValue){
+           biggestLength=lengthOfMinValue;
+           maxValueSpace = getSpace(lengthOfMinValue-lengthOfMaxValue);
+           minValueSpace = "";
+           resultSpace = getSpace(lengthOfMinValue-lengthOfResult);
+       }
+       if(lengthOfMinValue>lengthOfMaxValue&&lengthOfMinValue<lengthOfResult){
+           biggestLength=lengthOfResult;
+           maxValueSpace = getSpace(lengthOfResult-lengthOfMaxValue);
+           minValueSpace = getSpace(lengthOfResult-lengthOfMinValue);
+           resultSpace = "";
+        }
+        if(lengthOfMinValue==lengthOfMaxValue&&lengthOfResult>lengthOfMinValue){
+            biggestLength=lengthOfResult;
+            maxValueSpace = getSpace(lengthOfResult-lengthOfMaxValue);
+            minValueSpace = getSpace(lengthOfResult-lengthOfMinValue);
+            resultSpace = "";
+        }
+        if(lengthOfMinValue==lengthOfMaxValue&&lengthOfMaxValue==lengthOfResult){
+           biggestLength=lengthOfResult;
+           maxValueSpace = "";
+           minValueSpace = "";
+           resultSpace = "";
+        }
+
+    }
+
+    private String getSpace(int index){
+       StringBuilder spaces = new StringBuilder("");
+        for (int cursor=1;cursor<=index;cursor++){
+            spaces.append(" ");
+        }
+       return spaces.toString();
     }
 
     private long returnPositiveDigit(long number){
@@ -33,78 +84,19 @@ class LongMultiplication {
        return number;
     }
 
-    private String getMinValueSpaces(){
-        StringBuilder spaces = new StringBuilder("");
-        if(minValue==0){
-            for (int cursor=1;cursor<lengthOfMaxValue;cursor++){
-                spaces.append(" ");
-            }
-        }
-        else {
-            for (int cursor=0;cursor<lengthOfResult-lengthOfMinValue;cursor++){
-                spaces.append(" ");
-            }
-        }
-        return spaces.toString();
-    }
-
-    private String getMaxValueSpaces(){
-        StringBuilder spaces = new StringBuilder("");
-        if(maxValue<0){
-            for (int cursor=-1;cursor<lengthOfResult-lengthOfMaxValue;cursor++){
-                spaces.append(" ");
-            }
-        }
-        if(maxValue==0){
-            for (int cursor=1;cursor<lengthOfMinValue;cursor++){
-                spaces.append(" ");
-            }
-        }
-        if(maxValue>0){
-            for (int cursor=0;cursor<lengthOfResult-lengthOfMaxValue;cursor++){
-                spaces.append(" ");
-            }
-        }
-        return spaces.toString();
-    }
-
-    private String getResultSpaces(){
-        StringBuilder spaces = new StringBuilder("");
-        if(lengthOfMinValue>lengthOfResult&&result!=0){
-            for (int cursor=0;cursor<lengthOfMinValue-lengthOfResult;cursor++){
-                spaces.append(" ");
-            }
-        }
-        return spaces.toString();
-    }
-
     private String getLine(){
         StringBuilder line = new StringBuilder("");
-        if(result==0&&lengthOfMaxValue>lengthOfMinValue){
-            for (int cursor=1;cursor<lengthOfMaxValue;cursor++){
-                line.append("-");
-            }
-
-        }
-        if(result==0&&lengthOfMaxValue<lengthOfMinValue){
-            for (int cursor=1;cursor<lengthOfMinValue;cursor++){
-                line.append("-");
-            }
-        }
-        if(lengthOfResult<lengthOfMinValue&&maxValue!=0){
-           /* for (int cursor=0;cursor<lengthOfMinValue;cursor++){
-                line.append("-");
-            }*/
-        }
-        else{
-            for (int cursor=0;cursor<lengthOfResult;cursor++){
+        if(biggestLength==1){
+            line.append("-");
+        }else {
+            for (int cursor=0;cursor<biggestLength;cursor++){
                 line.append("-");
             }
         }
         return line.toString();
     }
 
-    public long[] getMultiplicationResults(){
+    private long[] getMultiplicationResults(){
         long[] multiplicationResults;
         if(minValue<0){
             multiplicationResults = new long[lengthOfMinValue-1];
@@ -127,58 +119,39 @@ class LongMultiplication {
 
     }
 
-    private String getMultiplicationResultSpaces(int index, long partResult){
-        StringBuilder spaces =new StringBuilder("");
-        if(result<0){
-            int partResultLength = String.valueOf(partResult).length()-1;
-            for (int cursor=index;cursor<lengthOfResult-partResultLength;cursor++){
-                spaces.append("-");
-            }
-        }
-        else {
-            int partResultLength = String.valueOf(partResult).length();
-            for (int cursor=index;cursor<lengthOfResult-partResultLength;cursor++){
-                spaces.append(" ");
-            }
-        }
-
-        return spaces.toString();
-    }
-
     private String getPartMultiplicationFormat(){
         StringBuilder multiplicationBuilder =new StringBuilder("");
-        if(minValue<0){
-            for (int cursor=0;cursor<lengthOfMinValue-1;cursor++){
-                long multiplicationResult = returnPositiveDigit(getMultiplicationResults()[cursor]);
-                String spaces = " "+getMultiplicationResultSpaces(cursor,multiplicationResult);
-                String stringResult = spaces+multiplicationResult+"\n";
-                multiplicationBuilder.append(stringResult);
-            }
-        }else {
-            for (int cursor=0;cursor<lengthOfMinValue;cursor++){
-                String spaces = getMultiplicationResultSpaces(cursor,getMultiplicationResults()[cursor]);
-                String stringResult = spaces+getMultiplicationResults()[cursor]+"\n";
-                multiplicationBuilder.append(stringResult);
-            }
+        int spaceIndicator = biggestLength;
+        for (int cursor=0;cursor<lengthOfMinValue-1;cursor++) {
+            buildMultiplicationPartResults(multiplicationBuilder, spaceIndicator, getMultiplicationResults()[cursor]);
+            spaceIndicator--;
         }
-
         return multiplicationBuilder.toString();
+    }
+
+    private void buildMultiplicationPartResults(StringBuilder multiplicationBuilder, int spaceIndicator, long number) {
+        long multiplicationResult = returnPositiveDigit(number);
+
+        String spaces = getSpace(spaceIndicator-String.valueOf(multiplicationResult).length());
+        String stringResult = spaces + multiplicationResult + "\n";
+        multiplicationBuilder.append(stringResult);
     }
 
     void print(){
         //if(maxValue==1|minValue==1|maxValue==0|minValue==0|maxValue==-1|minValue==-1){
-        if(maxValue<=9&maxValue>=-9&minValue<=9&minValue>=-9){
-            System.out.print(getMaxValueSpaces()+maxValue+"\n");
-            System.out.print(getMinValueSpaces()+minValue+"\n");
+        /*if(maxValue<=9|maxValue>=-9|minValue<=9|minValue>=-9){
+            System.out.print(maxValueSpace+maxValue+"\n");
+            System.out.print(minValueSpace+minValue+"\n");
             System.out.print(getLine()+"\n");
-            System.out.print(getResultSpaces()+result);
-        }else {
-            System.out.print(getMaxValueSpaces()+maxValue+"\n");
-            System.out.print(getMinValueSpaces()+minValue+"\n");
+            System.out.print(resultSpace+result);*//*
+        }else {*/
+            System.out.print(maxValueSpace+maxValue+"\n");
+            System.out.print(minValueSpace+minValue+"\n");
             System.out.print(getLine()+"\n");
             System.out.print(getPartMultiplicationFormat());
             System.out.print(getLine()+"\n");
-            System.out.print(getResultSpaces()+result);
-        }
+            System.out.print(resultSpace+result);
+
     }
+
 }
